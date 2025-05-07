@@ -12,7 +12,8 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
               <Image 
                 src={profilePic} 
                 alt="profile" 
-                fill
+                width={32}
+                height={32}
                 className="rounded-full object-cover"
               />
             ) : (
@@ -39,18 +40,17 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
           </button>
         </div>
       </div>
-      
       {img && (
-        <div className="relative w-full h-64">
+        <div className="relative w-full max-h-96" style={{height: '384px'}}>
           <Image 
             src={img} 
             alt={text} 
             fill
-            className="object-cover"
+            className="object-cover rounded"
+            style={{maxHeight: '384px'}}
           />
         </div>
       )}
-      
       <div className="p-4">
         <p className="text-gray-800 mb-4">{text}</p>
         <Reactions reactions={reactions} reactAction={reactAction} postId={postId} />
