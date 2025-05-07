@@ -2,9 +2,17 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+const path = require('path');
 
 // Load environment variables
-dotenv.config();
+const result = dotenv.config();
+if (result.error) {
+  console.error('Error loading .env file:', result.error);
+}
+
+// Debug: Check if environment variables are loaded
+console.log('Current directory:', __dirname);
+console.log('MongoDB URI:', process.env.MONGODB_URI ? 'URI is set' : 'URI is not set');
 
 // Create Express app
 const app = express();
@@ -14,10 +22,21 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Database connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/friendbay')
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+// Database connection with MongoDB Atlas
+if (!process.env.MONGODB_URI) {
+  console.error('MONGODB_URI is not defined in environment variables');
+  process.exit(1);
+}
+
+mongoose.connect(process.env.MONGODB_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('Connected to MongoDB Atlas'))
+.catch(err => {
+  console.error('MongoDB connection error:', err);
+  process.exit(1); // Exit if cannot connect to database
+});
 
 // Basic route
 app.get('/', (req, res) => {
