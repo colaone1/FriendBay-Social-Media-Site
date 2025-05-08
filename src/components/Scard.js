@@ -2,23 +2,27 @@ import Reactions from './Likes'
 import Link from 'next/link'
 import { useState } from 'react'
 
+// Default avatar used if no profile picture is provided or image fails to load
 const DEFAULT_AVATAR = 'https://api.dicebear.com/7.x/bottts/svg?seed=default'
 
 export default function Scard({ profilePic, id, img, text, reactions, reactAction, postId, deleteAction, onEdit }) {
+  // Track if the profile image failed to load
   const [imageError, setImageError] = useState(false)
 
+  // If the image fails to load, set error state to show default avatar
   const handleImageError = () => {
     setImageError(true)
   }
 
-  // Debug: log the profilePic value
-  console.log('profilePic:', profilePic)
+  // Debug: log the profilePic value (remove before deploying)
+  // console.log('profilePic:', profilePic)
 
   return (
     <div className="max-w-2xl mx-auto my-4 bg-white rounded-lg shadow-md overflow-hidden">
       <div className="p-4 bg-gray-50 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center">
           <div className="relative w-10 h-10 sm:w-12 sm:h-12 mr-3">
+            {/* Always show default avatar if profilePic is missing or fails to load */}
             <img
               src={profilePic && !imageError ? profilePic : DEFAULT_AVATAR}
               alt="profile"
@@ -45,6 +49,7 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
           </button>
         </div>
       </div>
+      {/* Show post image if provided */}
       {img && (
         <div className="relative w-full aspect-[4/3] sm:aspect-[16/9]">
           <img
@@ -58,6 +63,7 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
         <p className="text-gray-800 text-base sm:text-lg mb-4 whitespace-pre-wrap break-words">
           {text}
         </p>
+        {/* Reaction buttons */}
         <Reactions reactions={reactions} reactAction={reactAction} postId={postId} />
       </div>
     </div>
