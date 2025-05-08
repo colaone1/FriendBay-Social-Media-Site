@@ -7,7 +7,7 @@ export default function Home() {
 
   useEffect(() => {
     const storedPosts = JSON.parse(localStorage.getItem('posts') || '[]')
-    setPosts(storedPosts)
+    setPosts([...storedPosts])
   }, [])
 
   const reactAction = (postId: number, type: 'like' | 'love' | 'laugh') => {
