@@ -1,31 +1,28 @@
-import { useState, useEffect } from 'react'
 import Add from '../components/Add'
+import { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar'
 
-export default function AddPost() {
+export default function AddPage() {
   const [postId, setPostId] = useState(0)
 
   useEffect(() => {
-    const listContents = localStorage.getItem("posts")
-    let postValue = 0
-    if(listContents) {
-      postValue = (JSON.parse(listContents)[JSON.parse(listContents).length -1].postid) 
+    const posts = JSON.parse(localStorage.getItem('posts') || '[]')
+    if (posts.length > 0) {
+      setPostId(posts[posts.length - 1].postid)
     }
-    setPostId(postValue)
   }, [])
 
-  const updateListItems = (postid, id, text, img, likes, profilePic) => {
-    const postItem = { postid, id, text, img, profilePic, reactions: { like: 0, love: 0, laugh: 0 } }
-    const currentPosts = JSON.parse(localStorage.getItem("posts") || "[]")
-    const newPosts = [...currentPosts, postItem]
-    localStorage.setItem("posts", JSON.stringify(newPosts))
+  const handleSubmit = (postid, id, text, img, likes, profilePic) => {
+    const posts = JSON.parse(localStorage.getItem('posts') || '[]')
+    posts.push({ postid, id, text, img, likes, profilePic, reactions: { like: 0, love: 0, laugh: 0 } })
+    localStorage.setItem('posts', JSON.stringify(posts))
   }
 
   return (
     <div>
       <Navbar />
       <div className="container mx-auto px-4">
-        <Add onsubmit={updateListItems} lastid={postId} />
+        <Add onsubmit={handleSubmit} lastid={postId} />
       </div>
     </div>
   )

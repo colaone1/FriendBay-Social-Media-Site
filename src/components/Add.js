@@ -1,125 +1,61 @@
-import { useState, useEffect } from 'react'
-import toastr from 'toastr'
+import { useState } from 'react'
+import { useRouter } from 'next/router'
 
-export default function Add({ onsubmit, lastid, initialData, buttonText }) {
-  const [formData, setFormData] = useState({
-    postId: 0,
-    id: "",
-    text: "",
-    img: "",
-    profilePic: "",
-  })
+export default function Add({ onsubmit, lastid }) {
+  const [text, setText] = useState('')
+  const [img, setImg] = useState('')
+  const router = useRouter()
 
-  useEffect(() => {
-    if (initialData) {
-      setFormData({
-        postId: initialData.postid,
-        id: initialData.id,
-        text: initialData.text,
-        img: initialData.img,
-        profilePic: initialData.profilePic,
-      })
-    } else {
-      setFormData(prev => ({ ...prev, postId: lastid }))
-    }
-    toastr.options = {
-      closeButton: true,
-      debug: false,
-      extendedTimeOut: "1000",
-      hideDuration: "1000",
-      hideEasing: "linear",
-      hideMethod: "fadeOut",
-      newestOnTop: false,
-      onclick: null,
-      positionClass: "toast-top-full-width",
-      preventDuplicates: true,
-      progressBar: true,
-      showDuration: "300",
-      showEasing: "swing",
-      showMethod: "fadeIn",
-      timeOut: "5000",
-    }
-    toastr.clear()
-  }, [lastid, initialData])
-
-  const handleChange = (e) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }))
-  }
-
-  const submitHandler = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
-    const newId = initialData ? formData.postId : Date.now()
-    onsubmit(newId, formData.id, formData.text, formData.img, 0, formData.profilePic)
-    toastr.success(initialData ? "Post updated" : "Post added")
-    setFormData({
-      postId: newId,
-      id: "",
-      text: "",
-      img: "",
-      profilePic: "",
-    })
+    const postid = lastid + 1
+    const id = 'user' + Math.floor(Math.random() * 1000)
+    const profilePic = `https://randomuser.me/api/portraits/${Math.random() > 0.5 ? 'men' : 'women'}/${Math.floor(Math.random() * 100)}.jpg`
+    
+    onsubmit(postid, id, text, img, 0, profilePic)
+    setText('')
+    setImg('')
+    router.push('/')
   }
 
   return (
-    <form onSubmit={submitHandler} className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <div className="space-y-4">
+    <div className="max-w-2xl mx-auto p-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">User ID</label>
-          <input
-            name="id"
-            type="text"
-            value={formData.id}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          <label htmlFor="text" className="block text-sm font-medium text-gray-700">
+            What's on your mind?
+          </label>
+          <textarea
+            id="text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            rows="4"
+            required
           />
         </div>
-
+        
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Text</label>
+          <label htmlFor="image" className="block text-sm font-medium text-gray-700">
+            Image URL (optional)
+          </label>
           <input
-            name="text"
-            type="text"
-            value={formData.text}
-            placeholder="Enter your post text"
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-          <input
-            name="img"
-            type="text"
-            value={formData.img}
-            placeholder="Enter image URL"
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Profile Picture URL</label>
-          <input
-            name="profilePic"
-            type="text"
-            value={formData.profilePic}
-            placeholder="Enter profile picture URL"
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            type="url"
+            id="image"
+            value={img}
+            onChange={(e) => setImg(e.target.value)}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            placeholder="https://example.com/image.jpg"
           />
         </div>
 
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
-          {buttonText || (initialData ? "Save Changes" : "Add Post")}
+          Post
         </button>
-      </div>
-    </form>
+      </form>
+    </div>
   )
 } 
