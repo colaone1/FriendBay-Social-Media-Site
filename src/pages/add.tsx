@@ -28,7 +28,7 @@ export default function AddPage() {
 
   const handleSubmit = (postid: number, id: string, text: string, img: string, likes: number, profilePic: string) => {
     const posts: Post[] = JSON.parse(localStorage.getItem('posts') || '[]')
-    posts.push({ 
+    posts.unshift({ 
       postid, 
       id, 
       text, 
