@@ -5,6 +5,12 @@ import { useState } from 'react'
 
 export default function Scard({ profilePic, id, img, text, reactions, reactAction, postId, deleteAction, onEdit }) {
   const [imageLoading, setImageLoading] = useState(true)
+  const [imageError, setImageError] = useState(false)
+
+  const handleImageError = () => {
+    setImageError(true)
+    setImageLoading(false)
+  }
 
   return (
     <div className="max-w-2xl mx-auto my-4 bg-white rounded-lg shadow-md overflow-hidden">
@@ -20,6 +26,7 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
                 sizes="(max-width: 640px) 40px, 48px"
                 loading="lazy"
                 onLoadingComplete={() => setImageLoading(false)}
+                onError={handleImageError}
               />
             ) : (
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-gray-300 rounded-full">
@@ -47,7 +54,7 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
           </button>
         </div>
       </div>
-      {img && (
+      {img && !imageError && (
         <div className="relative w-full aspect-[4/3] sm:aspect-[16/9]">
           {imageLoading && (
             <div className="absolute inset-0 bg-gray-200 animate-pulse" />
@@ -61,6 +68,7 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             loading="lazy"
             onLoadingComplete={() => setImageLoading(false)}
+            onError={handleImageError}
           />
         </div>
       )}
