@@ -1,8 +1,11 @@
 import Image from 'next/image'
 import Reactions from './Likes'
 import Link from 'next/link'
+import { useState } from 'react'
 
 export default function Scard({ profilePic, id, img, text, reactions, reactAction, postId, deleteAction, onEdit }) {
+  const [imageLoading, setImageLoading] = useState(true)
+
   return (
     <div className="max-w-2xl mx-auto my-4 bg-white rounded-lg shadow-md overflow-hidden">
       <div className="p-4 bg-gray-50 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -15,6 +18,8 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
                 fill
                 className="rounded-full object-cover"
                 sizes="(max-width: 640px) 40px, 48px"
+                loading="lazy"
+                onLoadingComplete={() => setImageLoading(false)}
               />
             ) : (
               <svg viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-gray-300 rounded-full">
@@ -44,13 +49,18 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
       </div>
       {img && (
         <div className="relative w-full aspect-[4/3] sm:aspect-[16/9]">
+          {imageLoading && (
+            <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+          )}
           <Image 
             src={img} 
             alt={text} 
             fill
-            className="object-cover"
+            className="object-cover transition-opacity duration-300"
+            style={{ opacity: imageLoading ? 0 : 1 }}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            priority={false}
+            loading="lazy"
+            onLoadingComplete={() => setImageLoading(false)}
           />
         </div>
       )}
