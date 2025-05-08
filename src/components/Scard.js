@@ -2,7 +2,7 @@ import Reactions from './Likes'
 import Link from 'next/link'
 import { useState } from 'react'
 
-const DEFAULT_AVATAR = 'https://via.placeholder.com/100?text=Avatar'
+const DEFAULT_AVATAR = 'https://api.dicebear.com/7.x/bottts/svg?seed=default'
 
 export default function Scard({ profilePic, id, img, text, reactions, reactAction, postId, deleteAction, onEdit }) {
   const [imageError, setImageError] = useState(false)
