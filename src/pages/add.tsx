@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Navbar from '../components/Navbar'
 import Add from '../components/Add'
 
 interface Post {
@@ -39,5 +40,10 @@ export default function AddPage() {
     localStorage.setItem('posts', JSON.stringify(posts))
   }
 
-  return <Add onsubmit={handleSubmit} lastid={postId} />
+  return (
+    <>
+      <Navbar />
+      <Add onsubmit={handleSubmit} lastid={postId} />
+    </>
+  )
 } 
