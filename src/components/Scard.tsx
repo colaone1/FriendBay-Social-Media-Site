@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+// @ts-ignore
 import { FaHeart, FaThumbsUp, FaLaugh, FaSadTear, FaAngry, FaEdit } from 'react-icons/fa';
 
 interface Post {
