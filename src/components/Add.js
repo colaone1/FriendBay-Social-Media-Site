@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
+import toast, { Toaster } from 'react-hot-toast'
 
 // Default avatar used if no profile picture is provided
 const DEFAULT_AVATAR = 'https://api.dicebear.com/7.x/bottts/svg?seed=default'
@@ -23,17 +24,20 @@ export default function Add({ onsubmit }) {
     
     // Call parent handler to add the post
     onsubmit(postid, id, text, img, 0, profilePic)
+    // Show toast notification
+    toast.success('Post added successfully!')
     // Reset form fields
     setUsername('')
     setText('')
     setImg('')
     setProfilePicUrl('')
-    // Redirect to home page
-    router.push('/')
+    // Redirect to home page after a short delay
+    setTimeout(() => router.push('/'), 1000)
   }
 
   return (
     <div className="max-w-2xl mx-auto p-4">
+      <Toaster />
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Username input */}
         <div>
