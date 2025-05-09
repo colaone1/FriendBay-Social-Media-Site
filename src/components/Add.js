@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 // Default avatar used if no profile picture is provided
 const DEFAULT_AVATAR = 'https://api.dicebear.com/7.x/bottts/svg?seed=default'
 
-export default function Add({ onsubmit, lastid }) {
+export default function Add({ onsubmit }) {
   // Form state for username, post text, image, and profile picture URL
   const [username, setUsername] = useState('')
   const [text, setText] = useState('')
@@ -15,7 +15,7 @@ export default function Add({ onsubmit, lastid }) {
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault()
-    const postid = lastid + 1
+    const postid = Date.now(); // Use timestamp for unique postid
     // Use entered username or generate a random one
     const id = username.trim() || 'user' + Math.floor(Math.random() * 1000)
     // Use entered profile picture URL or fallback to default avatar
