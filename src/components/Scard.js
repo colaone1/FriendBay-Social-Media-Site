@@ -1,6 +1,8 @@
 import Reactions from './Likes'
 import Link from 'next/link'
 import { useState } from 'react'
+import { FaHeart, FaLaugh, FaSadTear, FaAngry, FaEdit } from 'react-icons/fa'
+import { HiHeart } from 'react-icons/hi'
 
 // Default avatar used if no profile picture is provided or image fails to load
 const DEFAULT_AVATAR = 'https://api.dicebear.com/7.x/bottts/svg?seed=default'
@@ -8,10 +10,31 @@ const DEFAULT_AVATAR = 'https://api.dicebear.com/7.x/bottts/svg?seed=default'
 export default function Scard({ profilePic, id, img, text, reactions, reactAction, postId, deleteAction, onEdit }) {
   // Track if the profile image failed to load
   const [imageError, setImageError] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [editedText, setEditedText] = useState(text)
+  const [editedImageUrl, setEditedImageUrl] = useState(img)
 
   // If the image fails to load, set error state to show default avatar
   const handleImageError = () => {
     setImageError(true)
+  }
+
+  const handleEdit = () => {
+    setIsEditing(true)
+  }
+
+  const handleSave = () => {
+    onEdit(postId, {
+      text: editedText,
+      imageUrl: editedImageUrl
+    })
+    setIsEditing(false)
+  }
+
+  const handleCancel = () => {
+    setEditedText(text)
+    setEditedImageUrl(img)
+    setIsEditing(false)
   }
 
   // Debug: log the profilePic value (remove before deploying)
@@ -36,10 +59,10 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
         </div>
         <div className="flex space-x-2">
           <button
-            onClick={() => onEdit(postId)}
+            onClick={handleEdit}
             className="text-yellow-500 hover:text-yellow-700 font-bold px-3 py-1 rounded transition-colors"
           >
-            Edit
+            <FaEdit size={20} />
           </button>
           <button
             onClick={() => deleteAction(postId)}
@@ -49,23 +72,58 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
           </button>
         </div>
       </div>
-      {/* Show post image if provided */}
-      {img && (
-        <div className="relative w-full aspect-[4/3] sm:aspect-[16/9]">
-          <img
-            src={img}
-            alt={text}
-            className="object-cover w-full h-full rounded"
+
+      {isEditing ? (
+        <div className="p-4">
+          <textarea
+            value={editedText}
+            onChange={(e) => setEditedText(e.target.value)}
+            className="w-full p-2 border rounded-lg mb-2"
+            rows={3}
           />
+          <input
+            type="text"
+            value={editedImageUrl}
+            onChange={(e) => setEditedImageUrl(e.target.value)}
+            placeholder="Image URL (optional)"
+            className="w-full p-2 border rounded-lg mb-2"
+          />
+          <div className="flex gap-2">
+            <button
+              onClick={handleSave}
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+            >
+              Save
+            </button>
+            <button
+              onClick={handleCancel}
+              className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
+      ) : (
+        <>
+          {/* Show post image if provided */}
+          {img && (
+            <div className="relative w-full aspect-[4/3] sm:aspect-[16/9]">
+              <img
+                src={img}
+                alt={text}
+                className="object-cover w-full h-full rounded"
+              />
+            </div>
+          )}
+          <div className="p-4">
+            <p className="text-gray-800 text-base sm:text-lg mb-4 whitespace-pre-wrap break-words">
+              {text}
+            </p>
+            {/* Reaction buttons */}
+            <Reactions reactions={reactions} reactAction={reactAction} postId={postId} />
+          </div>
+        </>
       )}
-      <div className="p-4">
-        <p className="text-gray-800 text-base sm:text-lg mb-4 whitespace-pre-wrap break-words">
-          {text}
-        </p>
-        {/* Reaction buttons */}
-        <Reactions reactions={reactions} reactAction={reactAction} postId={postId} />
-      </div>
     </div>
   )
 } 

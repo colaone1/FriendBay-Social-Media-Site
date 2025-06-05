@@ -33,10 +33,19 @@ export default function Home() {
     localStorage.setItem('posts', JSON.stringify(updatedPosts))
   }
 
-  const onEdit = (postId: number) => {
-    // Placeholder for edit logic
-    // You can implement edit functionality as needed
-    alert('Edit functionality not implemented yet!')
+  const onEdit = (postId: number, updatedPost: any) => {
+    const updatedPosts = posts.map(post => {
+      if (post.postid === postId) {
+        return {
+          ...post,
+          text: updatedPost.text,
+          img: updatedPost.imageUrl
+        }
+      }
+      return post
+    })
+    setPosts(updatedPosts)
+    localStorage.setItem('posts', JSON.stringify(updatedPosts))
   }
 
   return (
