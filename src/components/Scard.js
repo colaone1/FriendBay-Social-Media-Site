@@ -1,6 +1,6 @@
 import Reactions from './Likes'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FaHeart, FaLaugh, FaSadTear, FaAngry, FaEdit } from 'react-icons/fa'
 import { HiHeart } from 'react-icons/hi'
 
@@ -13,9 +13,13 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
   const [isEditing, setIsEditing] = useState(false)
   const [editedText, setEditedText] = useState(text)
   const [editedImageUrl, setEditedImageUrl] = useState(img)
+  const [isOwner, setIsOwner] = useState(false)
 
-  // Get current user from localStorage
-  const currentUser = localStorage.getItem('currentUser') || ''
+  useEffect(() => {
+    // Get current user from localStorage after component mounts
+    const currentUser = localStorage.getItem('currentUser') || ''
+    setIsOwner(currentUser === id)
+  }, [id])
 
   // If the image fails to load, set error state to show default avatar
   const handleImageError = () => {
