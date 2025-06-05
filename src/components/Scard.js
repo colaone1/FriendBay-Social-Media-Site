@@ -14,14 +14,13 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
   const [editedText, setEditedText] = useState(text)
   const [editedImageUrl, setEditedImageUrl] = useState(img)
   const [isOwner, setIsOwner] = useState(false)
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    // Check if window is defined (client-side)
-    if (typeof window !== 'undefined') {
-      // Get current user from localStorage after component mounts
-      const currentUser = localStorage.getItem('currentUser') || ''
-      setIsOwner(currentUser === id)
-    }
+    setIsClient(true)
+    // Get current user from localStorage after component mounts
+    const currentUser = localStorage.getItem('currentUser') || ''
+    setIsOwner(currentUser === id)
   }, [id])
 
   // If the image fails to load, set error state to show default avatar
@@ -47,8 +46,27 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
     setIsEditing(false)
   }
 
-  // Debug: log the profilePic value (remove before deploying)
-  // console.log('profilePic:', profilePic)
+  // Don't render edit/delete buttons during server-side rendering
+  const renderActionButtons = () => {
+    if (!isClient) return null;
+    
+    return isOwner ? (
+      <div className="flex space-x-2">
+        <button
+          onClick={handleEdit}
+          className="text-yellow-500 hover:text-yellow-700 font-bold px-3 py-1 rounded transition-colors"
+        >
+          <FaEdit size={20} />
+        </button>
+        <button
+          onClick={() => deleteAction(postId)}
+          className="text-red-500 hover:text-red-700 font-bold px-3 py-1 rounded transition-colors"
+        >
+          Delete
+        </button>
+      </div>
+    ) : null;
+  };
 
   return (
     <div className="max-w-2xl mx-auto my-4 bg-white rounded-lg shadow-md overflow-hidden">
@@ -67,23 +85,7 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
             @{id}
           </Link>
         </div>
-        {/* Only show edit and delete buttons if current user is the post creator */}
-        {isOwner && (
-          <div className="flex space-x-2">
-            <button
-              onClick={handleEdit}
-              className="text-yellow-500 hover:text-yellow-700 font-bold px-3 py-1 rounded transition-colors"
-            >
-              <FaEdit size={20} />
-            </button>
-            <button
-              onClick={() => deleteAction(postId)}
-              className="text-red-500 hover:text-red-700 font-bold px-3 py-1 rounded transition-colors"
-            >
-              Delete
-            </button>
-          </div>
-        )}
+        {renderActionButtons()}
       </div>
 
       {isEditing ? (
