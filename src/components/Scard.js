@@ -1,6 +1,6 @@
 import Reactions from './Likes'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { FaHeart, FaLaugh, FaSadTear, FaAngry, FaEdit } from 'react-icons/fa'
 import { HiHeart } from 'react-icons/hi'
 
@@ -13,15 +13,6 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
   const [isEditing, setIsEditing] = useState(false)
   const [editedText, setEditedText] = useState(text)
   const [editedImageUrl, setEditedImageUrl] = useState(img)
-  const [isOwner, setIsOwner] = useState(false)
-  const [isClient, setIsClient] = useState(false)
-
-  useEffect(() => {
-    setIsClient(true)
-    // Get current user from localStorage after component mounts
-    const currentUser = localStorage.getItem('currentUser') || ''
-    setIsOwner(currentUser === id)
-  }, [id])
 
   // If the image fails to load, set error state to show default avatar
   const handleImageError = () => {
@@ -46,34 +37,11 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
     setIsEditing(false)
   }
 
-  // Don't render edit/delete buttons during server-side rendering
-  const renderActionButtons = () => {
-    if (!isClient) return null;
-    
-    return isOwner ? (
-      <div className="flex space-x-2">
-        <button
-          onClick={handleEdit}
-          className="text-yellow-500 hover:text-yellow-700 font-bold px-3 py-1 rounded transition-colors"
-        >
-          <FaEdit size={20} />
-        </button>
-        <button
-          onClick={() => deleteAction(postId)}
-          className="text-red-500 hover:text-red-700 font-bold px-3 py-1 rounded transition-colors"
-        >
-          Delete
-        </button>
-      </div>
-    ) : null;
-  };
-
   return (
     <div className="max-w-2xl mx-auto my-4 bg-white rounded-lg shadow-md overflow-hidden">
       <div className="p-4 bg-gray-50 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="flex items-center">
           <div className="relative w-10 h-10 sm:w-12 sm:h-12 mr-3">
-            {/* Always show default avatar if profilePic is missing or fails to load */}
             <img
               src={profilePic && !imageError ? profilePic : DEFAULT_AVATAR}
               alt="profile"
@@ -85,7 +53,20 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
             @{id}
           </Link>
         </div>
-        {renderActionButtons()}
+        <div className="flex space-x-2">
+          <button
+            onClick={handleEdit}
+            className="text-yellow-500 hover:text-yellow-700 font-bold px-3 py-1 rounded transition-colors"
+          >
+            <FaEdit size={20} />
+          </button>
+          <button
+            onClick={() => deleteAction(postId)}
+            className="text-red-500 hover:text-red-700 font-bold px-3 py-1 rounded transition-colors"
+          >
+            Delete
+          </button>
+        </div>
       </div>
 
       {isEditing ? (
@@ -120,7 +101,6 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
         </div>
       ) : (
         <>
-          {/* Show post image if provided */}
           {img && (
             <div className="relative w-full aspect-[4/3] sm:aspect-[16/9]">
               <img
@@ -134,7 +114,6 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
             <p className="text-gray-800 text-base sm:text-lg mb-4 whitespace-pre-wrap break-words">
               {text}
             </p>
-            {/* Reaction buttons */}
             <Reactions reactions={reactions} reactAction={reactAction} postId={postId} />
           </div>
         </>

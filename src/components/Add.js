@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/router'
 import toast, { Toaster } from 'react-hot-toast'
 
@@ -21,11 +21,6 @@ export default function Add({ onsubmit }) {
     const id = username.trim() || 'user' + Math.floor(Math.random() * 1000)
     // Use entered profile picture URL or fallback to default avatar
     const profilePic = profilePicUrl.trim() || DEFAULT_AVATAR
-    
-    // Store current user in localStorage only on client-side
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('currentUser', id)
-    }
     
     // Call parent handler to add the post
     onsubmit(postid, id, text, img, 0, profilePic)
