@@ -14,6 +14,9 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
   const [editedText, setEditedText] = useState(text)
   const [editedImageUrl, setEditedImageUrl] = useState(img)
 
+  // Get current user from localStorage
+  const currentUser = localStorage.getItem('currentUser') || ''
+
   // If the image fails to load, set error state to show default avatar
   const handleImageError = () => {
     setImageError(true)
@@ -57,20 +60,23 @@ export default function Scard({ profilePic, id, img, text, reactions, reactActio
             @{id}
           </Link>
         </div>
-        <div className="flex space-x-2">
-          <button
-            onClick={handleEdit}
-            className="text-yellow-500 hover:text-yellow-700 font-bold px-3 py-1 rounded transition-colors"
-          >
-            <FaEdit size={20} />
-          </button>
-          <button
-            onClick={() => deleteAction(postId)}
-            className="text-red-500 hover:text-red-700 font-bold px-3 py-1 rounded transition-colors"
-          >
-            Delete
-          </button>
-        </div>
+        {/* Only show edit and delete buttons if current user is the post creator */}
+        {currentUser === id && (
+          <div className="flex space-x-2">
+            <button
+              onClick={handleEdit}
+              className="text-yellow-500 hover:text-yellow-700 font-bold px-3 py-1 rounded transition-colors"
+            >
+              <FaEdit size={20} />
+            </button>
+            <button
+              onClick={() => deleteAction(postId)}
+              className="text-red-500 hover:text-red-700 font-bold px-3 py-1 rounded transition-colors"
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </div>
 
       {isEditing ? (

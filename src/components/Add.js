@@ -22,6 +22,9 @@ export default function Add({ onsubmit }) {
     // Use entered profile picture URL or fallback to default avatar
     const profilePic = profilePicUrl.trim() || DEFAULT_AVATAR
     
+    // Store current user in localStorage
+    localStorage.setItem('currentUser', id)
+    
     // Call parent handler to add the post
     onsubmit(postid, id, text, img, 0, profilePic)
     // Show toast notification
